@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beagles On Germain</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --cream: #f9f7f4; --ink: #1a1916; --muted: #8a8680; --rule: rgba(26,25,22,0.12); }
+  body { background: var(--cream); color: var(--ink); font-family: 'Jost', sans-serif; font-weight: 300; min-height: 100vh; }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 2.5rem 4rem 2rem; border-bottom: 0.5px solid var(--rule);
+  }
+  .wordmark { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 1.35rem; letter-spacing: 0.04em; }
+  .wordmark span { font-style: italic; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-weight: 200; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+
+  .hero { padding: 5rem 4rem 4rem; max-width: 640px; }
+  .hero-eyebrow { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; }
+  .hero h1 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(2.8rem, 5vw, 4.2rem); line-height: 1.1; letter-spacing: -0.01em; }
+  .hero h1 em { font-style: italic; }
+
+  .gallery-section { padding: 0 4rem 5rem; }
+  .section-header { display: flex; justify-content: space-between; align-items: baseline; padding: 2.5rem 0 2rem; border-bottom: 0.5px solid var(--rule); margin-bottom: 2.5rem; }
+  .section-title { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+  .gallery-filter { display: flex; gap: 2rem; }
+  .filter-btn { background: none; border: none; font-family: 'Jost', sans-serif; font-weight: 200; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); cursor: pointer; padding: 0; transition: color 0.2s; }
+  .filter-btn.active { color: var(--ink); border-bottom: 0.5px solid var(--ink); padding-bottom: 2px; }
+  .filter-btn:hover { color: var(--ink); }
+
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.25rem; }
+  .photo { background: var(--ph-color, #e0ddd8); position: relative; overflow: hidden; cursor: pointer; }
+  .photo::after { content: ''; position: absolute; inset: 0; background: var(--ink); opacity: 0; transition: opacity 0.3s ease; }
+  .photo:hover::after { opacity: 0.08; }
+  .photo-label { position: absolute; bottom: 1rem; left: 1rem; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(249,247,244,0.85); font-weight: 300; opacity: 0; transform: translateY(4px); transition: opacity 0.3s, transform 0.3s; z-index: 1; }
+  .photo:hover .photo-label { opacity: 1; transform: translateY(0); }
+  .photo-tag { position: absolute; top: 0.9rem; right: 0.9rem; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 7px; background: rgba(249,247,244,0.82); color: var(--ink); z-index: 2; opacity: 0; transition: opacity 0.3s; }
+  .photo:hover .photo-tag { opacity: 1; }
+  .col-8 { grid-column: span 8; } .col-7 { grid-column: span 7; } .col-5 { grid-column: span 5; }
+  .col-4 { grid-column: span 4; } .col-6 { grid-column: span 6; }
+  .tall { aspect-ratio: 4/5; } .wide { aspect-ratio: 16/9; } .sq { aspect-ratio: 1/1; }
+  .photo-inner { width: 100%; height: 100%; position: relative; }
+
+  /* Replace placeholder divs with actual images like this:
+     <img src="your-photo.jpg" alt="Description" style="width:100%;height:100%;object-fit:cover;display:block;">
+  */
+  .upload-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26,25,22,0.3); text-align: center; line-height: 1.8; pointer-events: none; z-index: 2; }
+
+  .blog-section { padding: 0 4rem 6rem; border-top: 0.5px solid var(--rule); margin-top: 1rem; }
+  .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin-top: 2.5rem; }
+  .blog-card { cursor: pointer; }
+  .blog-thumb { aspect-ratio: 3/2; background: var(--ph-color, #d8d5cc); margin-bottom: 1.25rem; position: relative; overflow: hidden; }
+  .blog-thumb::after { content: ''; position: absolute; inset: 0; background: var(--ink); opacity: 0; transition: opacity 0.3s; }
+  .blog-card:hover .blog-thumb::after { opacity: 0.07; }
+  .blog-meta { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.6rem; display: flex; gap: 1rem; }
+  .blog-cat { color: var(--ink); }
+  .blog-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 1.2rem; line-height: 1.35; margin-bottom: 0.7rem; transition: opacity 0.2s; }
+  .blog-card:hover .blog-title { opacity: 0.65; }
+  .blog-excerpt { font-size: 0.82rem; line-height: 1.75; color: var(--muted); }
+  .blog-read-more { display: inline-block; margin-top: 1rem; font-size: 0.65rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); border-bottom: 0.5px solid var(--ink); padding-bottom: 2px; }
+
+  .about-strip { display: grid; grid-template-columns: 1fr 1fr; border-top: 0.5px solid var(--rule); border-bottom: 0.5px solid var(--rule); margin: 0 4rem 6rem; }
+  .about-text { padding: 4rem 4rem 4rem 0; border-right: 0.5px solid var(--rule); }
+  .about-text h2 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 2rem; margin-bottom: 1.5rem; line-height: 1.2; }
+  .about-text p { font-size: 0.9rem; line-height: 1.85; color: var(--muted); max-width: 400px; }
+  .about-contact { padding: 4rem 0 4rem 4rem; display: flex; flex-direction: column; justify-content: flex-end; }
+  .contact-label { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+  .contact-email { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 300; font-style: italic; }
+
+  footer { padding: 2rem 4rem; display: flex; justify-content: space-between; align-items: center; }
+  footer p { font-size: 0.68rem; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1.5rem 1.5rem 1.25rem; flex-direction: column; gap: 1.5rem; }
+    .hero, .gallery-section, .blog-section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .col-8, .col-7, .col-5, .col-4 { grid-column: span 12; }
+    .blog-grid { grid-template-columns: 1fr; }
+    .about-strip { grid-template-columns: 1fr; margin: 0 1.5rem 4rem; }
+    .about-text { padding: 2.5rem 0; border-right: none; border-bottom: 0.5px solid var(--rule); }
+    .about-contact { padding: 2.5rem 0; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wordmark">Beagles <span>On Germain</span></div>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Work</a></li>
+    <li><a href="#">Series</a></li>
+    <li><a href="#blog">Journal</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <p class="hero-eyebrow">Landscape, Nature &amp; Street Photography</p>
+  <h1>Light finding<br><em>its own way</em><br>through.</h1>
+</section>
+
+<section class="gallery-section">
+  <div class="section-header">
+    <span class="section-title">Selected Work</span>
+    <div class="gallery-filter">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="landscape">Landscape</button>
+      <button class="filter-btn" data-filter="nature">Nature</button>
+      <button class="filter-btn" data-filter="street">Street</button>
+    </div>
+  </div>
+
+  <div class="grid" id="gallery">
+    <!-- To add a real photo, replace the <div class="photo-inner"></div> and <div class="upload-hint"> with:
+         <img src="your-photo-filename.jpg" alt="Your description" style="width:100%;height:100%;object-fit:cover;display:block;">
+    -->
+    <div class="photo col-8 wide" style="--ph-color:#d4d0c8;" data-cat="landscape">
+      <div class="photo-inner"></div>
+      <div class="upload-hint">your photo<br>here</div>
+      <span class="photo-tag">Landscape</span>
+      <span class="photo-label">Morning Fog</span>
+    </div>
+    <div class="photo col-4 wide" style="--ph-color:#c8c5bc;" data-cat="nature">
+      <div class="photo-inner"></div>
+      <div class="upload-hint">your photo<br>here</div>
+      <span class="photo-tag">Nature</span>
+      <span class="photo-label">Canopy</span>
+    </div>
+    <div class="photo col-4 sq" style="--ph-color:#dbd8d0;" data-cat="street">
+      <div class="photo-inner"></div>
+      <div class="upload-hint">your photo<br>here</div>
+      <span class="photo-tag">Street</span>
+      <span class="photo-label">Germain St.</span>
+    </div>
+    <div class="photo col-4 sq" style="--ph-color:#c2c0b7;" data-cat="landscape">
+      <div class="photo-inner"></div>
+      <div class="upload-hint">your photo<br>here</div>
+      <span class="photo-tag">Landscape</span>
+      <span class="photo-label">Ridge Line</span>
+    </div>
+    <div class="photo col-4 sq" style="--ph-color:#d0cdc4;" data-cat="street">
+      <div class="photo-inner"></div>
+      <div class="upload-hint">your photo<br>here</div>
+      <span class="photo-tag">Street</span>
+      <span class="photo-label">Uptown, Dusk</span>
+    </div>
+    <div class="photo col-5 tall" style="--ph-color:#cbc8bf;" data-cat="nature">
+      <div class="photo-inner"></div>
+      <div class="upload-hint">your photo<br>here</div>
+      <span class="photo-tag">Nature</span>
+      <span class="photo-label">Old Growth</span>
+    </div>
+    <div class="photo col-7 tall" style="--ph-color:#d8d5cc;" data-cat="landscape">
+      <div class="photo-inner"></div>
+      <div class="upload-hint">your photo<br>here</div>
+      <span class="photo-tag">Landscape</span>
+      <span class="photo-label">Open Valley</span>
+    </div>
+  </div>
+</section>
+
+<section class="blog-section" id="blog">
+  <div class="section-header">
+    <span class="section-title">Journal</span>
+    <span style="font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);cursor:pointer;">All Posts &rarr;</span>
+  </div>
+  <div class="blog-grid">
+    <div class="blog-card">
+      <div class="blog-thumb" style="--ph-color:#d4d0c8;"></div>
+      <div class="blog-meta"><span class="blog-cat">Landscape</span><span>March 2026</span></div>
+      <h3 class="blog-title">Chasing the fog along the Fundy shore</h3>
+      <p class="blog-excerpt">Early mornings on the Bay of Fundy have a particular quality — the tide retreats and the mist rolls in to fill the space it leaves behind.</p>
+      <span class="blog-read-more">Read more</span>
+    </div>
+    <div class="blog-card">
+      <div class="blog-thumb" style="--ph-color:#c8c5bc;"></div>
+      <div class="blog-meta"><span class="blog-cat">Street</span><span>February 2026</span></div>
+      <h3 class="blog-title">What Germain Street looks like at 6am</h3>
+      <p class="blog-excerpt">The city before it wakes is a different place entirely. Delivery trucks, pigeons, and the hiss of an espresso machine through a cracked door.</p>
+      <span class="blog-read-more">Read more</span>
+    </div>
+    <div class="blog-card">
+      <div class="blog-thumb" style="--ph-color:#dbd8d0;"></div>
+      <div class="blog-meta"><span class="blog-cat">Process</span><span>January 2026</span></div>
+      <h3 class="blog-title">On slowing down and shooting less</h3>
+      <p class="blog-excerpt">A reflection on switching from spray-and-pray to deliberate, single-frame shooting — and what it changed about how I see.</p>
+      <span class="blog-read-more">Read more</span>
+    </div>
+  </div>
+</section>
+
+<div class="about-strip">
+  <div class="about-text">
+    <h2>About the work</h2>
+    <p>Rooted in the quiet hours — before the light has fully decided what it wants to be. These photographs move between the wilderness of the Maritimes and the everyday life of Saint John's streets.<br><br>Based in New Brunswick, Canada.</p>
+  </div>
+  <div class="about-contact">
+    <p class="contact-label">Get in touch</p>
+    <p class="contact-email">hello@beaglesongermain.com</p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 Beagles On Germain</p>
+  <p>New Brunswick, Canada</p>
+</footer>
+
+<script>
+  const filters = document.querySelectorAll('.filter-btn');
+  const photos = document.querySelectorAll('.photo[data-cat]');
+
+  filters.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filters.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      photos.forEach(p => {
+        p.style.display = (f === 'all' || p.dataset.cat === f) ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
